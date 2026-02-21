@@ -1,15 +1,10 @@
-name: basic-code-check
-
-on:
-  pull_request:
-    branches: [ main, develop ]
-
 jobs:
   build:
     runs-on: ubuntu-latest
+    # This tells GitHub to run all 'run:' commands inside the 'src' folder
     defaults:
       run:
-        working-directory: ./src
+        working-directory: ./src 
 
     steps:
       - name: Checkout Code
