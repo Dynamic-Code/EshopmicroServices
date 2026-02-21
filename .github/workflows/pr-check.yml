@@ -1,0 +1,14 @@
+name: PR Quality Check
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Build/Test
+        run: |
+          echo "Running tests for microservices..."
+          # Add your build commands here (e.g., npm test, go test, etc.)
