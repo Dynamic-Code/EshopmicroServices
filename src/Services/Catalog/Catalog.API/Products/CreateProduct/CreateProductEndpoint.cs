@@ -8,7 +8,7 @@
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPost("/products", async (CreateProductRequest request, ISender sender) =>
+            app.MapPost("/product", async (CreateProductRequest request, ISender sender) =>
             {
                 //MediatR need command obj in order to trigger CH.
                 var command = request.Adapt<CreateProductCommand>();  //Created request cmd mapped using Mapster
