@@ -6,6 +6,7 @@
 
     internal class GetProductsQueryHandler(IDocumentSession session, ILogger<GetProductsQueryHandler> logger) : IQueryHandler<GetProductsQuery, GetProductResult>
     {
+        // Using Marten layer for Dbs
         public async Task<GetProductResult> Handle(GetProductsQuery query, CancellationToken cancellationToken)
         {
             logger.LogInformation("GetProductsQueryHandler.Handle called with {@Query}", query);
