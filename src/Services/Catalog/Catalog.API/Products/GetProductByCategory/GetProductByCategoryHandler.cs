@@ -1,7 +1,4 @@
-﻿using Marten.Linq.QueryHandlers;
-using System.Collections;
-
-namespace Catalog.API.Products.GetProductByCategory
+﻿namespace Catalog.API.Products.GetProductByCategory
 {
     public record GetProductByCategoryQuery(string Category) : IQuery<GetproductByCategoryResult>;
     public record GetproductByCategoryResult(IEnumerable<Product> Products);
