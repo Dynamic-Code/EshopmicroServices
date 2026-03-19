@@ -1,5 +1,4 @@
 ﻿
-
 namespace Catalog.API.Products.CreateProduct
 {
     public record CreateProductCommand(string Name, List<string> Category, string Description, string ImageFile, decimal Price)
@@ -7,10 +6,30 @@ namespace Catalog.API.Products.CreateProduct
 
     public record CreateProductResult(Guid Id);
 
-    internal class CreateProductCommandHandler(IDocumentSession session) : ICommandHandler<CreateProductCommand, CreateProductResult>
+    //Added Validation using FluentValidation
+    public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
+    {
+        public CreateProductCommandValidator()
+        {
+            RuleFor(x => x.Name).NotEmpty().WithMessage("Name is requiured");
+            RuleFor(x => x.Category).NotEmpty().WithMessage("Category is requiured");
+            RuleFor(x => x.ImageFile).NotEmpty().WithMessage("ImageFile is requiured");
+            RuleFor(x => x.Price).NotEmpty().WithMessage("Price Must be greater than 0");
+        }
+    }
+
+    internal class CreateProductCommandHandler(IDocumentSession session, IValidator<CreateProductCommand> validator) : ICommandHandler<CreateProductCommand, CreateProductResult>
     {
         public async Task<CreateProductResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
         {
+            // Handler check against our validation rules and if there is any error, it will throw errors exception
+            var result = await validator.ValidateAsync(command, cancellationToken);
+            var errors = result.Errors.Select(x => x.ErrorMessage).ToList();
+            if (errors.Any())
+            {
+                throw new ValidationException(errors.FirstOrDefault());
+            }
+
             //Create Product Entity
             var product = new Product
             {
