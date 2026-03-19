@@ -6,7 +6,18 @@ namespace Catalog.API.Products.UpdateProduct
         : ICommand<UpdateProductResult>;
     public record UpdateProductResult(bool IsSuccess);
 
-    internal class UpdateProductCommandHandler(IDocumentSession session, ILogger<UpdateProductCommandHandler> logger) 
+    public class UpdateProductCommandValidators : AbstractValidator<UpdateProductCommand>
+    {
+        public UpdateProductCommandValidators()
+        {
+            RuleFor(x => x.Id).NotEmpty().WithMessage("Product Id is required");
+            RuleFor(x => x.Name).NotEmpty().WithMessage("Name is required").Length(2, 150).WithMessage("Must be in between 2 to 150 characters");
+            RuleFor(x => x.Price).GreaterThan(0).WithMessage("Price must be greatged than 0");
+        }
+    }
+    
+
+    internal class UpdateProductCommandHandler(IDocumentSession session, ILogger<UpdateProductCommandHandler> logger)
         : ICommandHandler<UpdateProductCommand, UpdateProductResult>
     {
         public async Task<UpdateProductResult> Handle(UpdateProductCommand command, CancellationToken cancellationToken)
