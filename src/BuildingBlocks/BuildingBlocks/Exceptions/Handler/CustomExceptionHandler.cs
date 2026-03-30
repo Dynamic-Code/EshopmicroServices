@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BuildingBlocks.Exceptions.Handler
 {
-    public class CustomExceptionHandler(ILogger logger)
+    public class CustomExceptionHandler(ILogger<CustomExceptionHandler> logger)
         : IExceptionHandler
     {
         public async ValueTask<bool> TryHandleAsync(HttpContext context, Exception exception, CancellationToken cancellationToken)
