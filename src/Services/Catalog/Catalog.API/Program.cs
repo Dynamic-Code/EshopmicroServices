@@ -1,6 +1,4 @@
-using BuildingBlocks.Behaviours;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,36 +19,17 @@ builder.Services.AddMarten(opts =>
     opts.Connection(builder.Configuration.GetConnectionString("Database")!);
 }).UseLightweightSessions();
 
+builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.MapCarter();
 
-//Added  Global asp.net exception handler to catch unhandled exceptions and return a standardized error response
-app.UseExceptionHandler(exceptionhandlerApp =>
+app.UseExceptionHandler(opt =>
 {
-    exceptionhandlerApp.Run(async eontext =>
-    {
-        var exception = eontext.Features.Get<IExceptionHandlerFeature>()?.Error;
-        if (exception == null)
-        {
-            return;
-        }
-        var problemDetails = new ProblemDetails
-        {
-            Title = exception.Message,
-            Status = StatusCodes.Status500InternalServerError,
-            Detail = exception.StackTrace
-        };
 
-        var logger = eontext.RequestServices.GetRequiredService<ILogger<Program>>();
-        logger.LogError(exception, exception.Message);
-
-        eontext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-        eontext.Response.ContentType = "application/problem+json";
-
-        await eontext.Response.WriteAsJsonAsync(problemDetails);
-    });
 });
+
 
 app.Run();
